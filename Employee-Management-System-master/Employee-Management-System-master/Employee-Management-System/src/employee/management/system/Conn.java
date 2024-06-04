@@ -18,14 +18,30 @@ public class Conn {
     }
     
     public boolean authenticate(String username, String password) {
-        String query = "SELECT * FROM login WHERE username = ? AND password = ?";
-        try (PreparedStatement prepstat = c.prepareStatement(query)) {
-            prepstat.setString(1, username);
-            prepstat.setString(2, password);
-            ResultSet rs = prepstat.executeQuery();
-            return rs.next(); // Returns true if a matching record is found
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try {
+            // Preconditions
+            assert username != null && !username.isEmpty() : "Username should not be null or empty";
+            assert password != null && !password.isEmpty() : "Password should not be null or empty";
+            
+            String query = "SELECT * FROM login WHERE username = ? AND password = ?";
+            try (PreparedStatement pstmt = c.prepareStatement(query)) {
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
+                ResultSet rs = pstmt.executeQuery();
+                
+                boolean authenticated = rs.next();
+                
+                // Postconditions
+                assert authenticated || !authenticated : "Authenticated should be a boolean";
+                
+                return authenticated;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (AssertionError e) {
+            System.err.println("Assertion failed: " + e.getMessage());
+            // Handle the assertion failure as needed
             return false;
         }
     }

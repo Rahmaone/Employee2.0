@@ -52,20 +52,16 @@ public class Login extends JFrame implements ActionListener{
     
     public void actionPerformed(ActionEvent ae) {
         try {
-            // Get the username and password from the text fields
             String username = tfusername.getText();
             String password = new String(tfpassword.getPassword());
 
-            // Preconditions
-            assert username != null : "Username should not be null";
-            assert !username.isEmpty() : "Username should not be empty";
-            assert password != null : "Password should not be null";
-            assert !password.isEmpty() : "Password should not be empty";
+//            assert username != null : "Username should not be null";
+//            assert !username.isEmpty() : "Username should not be empty";
+//            assert password != null : "Password should not be null";
+//            assert !password.isEmpty() : "Password should not be empty";
 
-            // Create a connection object
             Conn c = new Conn();
 
-            // Authenticate the user
             if (c.authenticate(username, password)) {
                 setVisible(false);
                 new Home();
@@ -74,7 +70,6 @@ public class Login extends JFrame implements ActionListener{
                 setVisible(false);
             }
         } catch (Exception e) {
-            // Catch any exceptions and show an error message
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "An unexpected error occurred. Please try again later.");
         }
