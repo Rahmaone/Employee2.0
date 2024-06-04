@@ -7,7 +7,8 @@ import java.sql.*;
 
 public class Login extends JFrame implements ActionListener{
     
-    JTextField tfusername, tfpassword;
+    JTextField tfusername;
+    JPasswordField tfpassword;
     
     Login() {
         
@@ -26,7 +27,7 @@ public class Login extends JFrame implements ActionListener{
         lblpassword.setBounds(40, 70, 100, 30);
         add(lblpassword);
         
-        tfpassword = new JTextField();
+        tfpassword = new JPasswordField();
         tfpassword.setBounds(150, 70, 150, 30);
         add(tfpassword);
         
@@ -51,14 +52,21 @@ public class Login extends JFrame implements ActionListener{
     
     public void actionPerformed(ActionEvent ae) {
         try {
+            // Get the username and password from the text fields
             String username = tfusername.getText();
-            String password = tfpassword.getText();
-            
+            String password = new String(tfpassword.getPassword());
+
+            // Preconditions
+            assert username != null : "Username should not be null";
+            assert !username.isEmpty() : "Username should not be empty";
+            assert password != null : "Password should not be null";
+            assert !password.isEmpty() : "Password should not be empty";
+
+            // Create a connection object
             Conn c = new Conn();
-            String query = "select * from login where username = '"+username+"' and password = '"+password+"'";
-            
-            ResultSet rs = c.s.executeQuery(query);
-            if (rs.next()) {
+
+            // Authenticate the user
+            if (c.authenticate(username, password)) {
                 setVisible(false);
                 new Home();
             } else {
@@ -66,9 +74,13 @@ public class Login extends JFrame implements ActionListener{
                 setVisible(false);
             }
         } catch (Exception e) {
+            // Catch any exceptions and show an error message
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An unexpected error occurred. Please try again later.");
         }
     }
+
+
     
     public static void main(String[] args) {
         new Login();
