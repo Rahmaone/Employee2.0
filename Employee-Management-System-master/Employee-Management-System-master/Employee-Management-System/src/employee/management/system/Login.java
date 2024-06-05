@@ -3,7 +3,6 @@ package employee.management.system;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.*;
 
 public class Login extends JFrame implements ActionListener{
     
