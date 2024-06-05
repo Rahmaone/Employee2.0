@@ -24,10 +24,10 @@ public class Conn {
             assert password != null && !password.isEmpty() : "Password should not be null or empty";
             
             String query = "SELECT * FROM login WHERE username = ? AND password = ?";
-            try (PreparedStatement pstmt = c.prepareStatement(query)) {
-                pstmt.setString(1, username);
-                pstmt.setString(2, password);
-                ResultSet rs = pstmt.executeQuery();
+            try (PreparedStatement prepstat = c.prepareStatement(query)) {
+                prepstat.setString(1, username);
+                prepstat.setString(2, password);
+                ResultSet rs = prepstat.executeQuery();
                 
                 boolean authenticated = rs.next();
                 
@@ -41,7 +41,6 @@ public class Conn {
             }
         } catch (AssertionError e) {
             System.err.println("Assertion failed: " + e.getMessage());
-            // Handle the assertion failure as needed
             return false;
         }
     }

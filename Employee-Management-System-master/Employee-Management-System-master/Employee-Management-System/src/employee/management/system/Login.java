@@ -55,10 +55,10 @@ public class Login extends JFrame implements ActionListener{
             String username = tfusername.getText();
             String password = new String(tfpassword.getPassword());
 
-//            assert username != null : "Username should not be null";
-//            assert !username.isEmpty() : "Username should not be empty";
-//            assert password != null : "Password should not be null";
-//            assert !password.isEmpty() : "Password should not be empty";
+            if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Username and password cannot be empty");
+                return;
+            }
 
             Conn c = new Conn();
 
