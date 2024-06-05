@@ -3,6 +3,8 @@ package employee.management.system;
 import java.awt.*;
 import javax.swing.*;
 import com.toedter.calendar.JDateChooser;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import java.awt.event.*;
 
@@ -13,7 +15,7 @@ public class AddEmployee extends JFrame implements ActionListener{
     
     JTextField tfname, tffname, tfaddress, tfphone, tfaadhar, tfemail, tfsalary, tfdesignation;
     JDateChooser dcdob;
-    JComboBox cbeducation;
+    JComboBox<String> cbeducation;
     JLabel lblempId;
     JButton add, back;
     
@@ -162,14 +164,55 @@ public class AddEmployee extends JFrame implements ActionListener{
             String empId = lblempId.getText();
             
             try {
+                // Assertion for non-null values
+                assert !name.isEmpty() : "Name cannot be empty";
+                assert !dob.isEmpty() : "Date of Birth cannot be empty";
+                assert !salary.isEmpty() : "Salary cannot be empty";
+                assert !address.isEmpty() : "Address cannot be empty";
+                assert !phone.isEmpty() : "Phone number cannot be empty";
+                assert !email.isEmpty() : "Email cannot be empty";
+                assert !designation.isEmpty() : "Designation cannot be empty";
+                assert !aadhar.isEmpty() : "Aadhar Number cannot be empty";
+                
+                // Defensive programming for email format
+                if (!email.contains("@") || !email.contains(".")) {
+                    throw new IllegalArgumentException("Invalid email format");
+                }
+                
+                // Establish database connection
                 Conn conn = new Conn();
-                String query = "insert into employee values('"+name+"', '"+fname+"', '"+dob+"', '"+salary+"', '"+address+"', '"+phone+"', '"+email+"', '"+education+"', '"+designation+"', '"+aadhar+"', '"+empId+"')";
-                conn.s.executeUpdate(query);
+                
+                // Prepare the SQL query
+                String query = "INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                
+                // Set values for the prepared statement
+                pstmt.setString(1, name);
+                pstmt.setString(2, fname);
+                pstmt.setString(3, dob);
+                pstmt.setString(4, salary);
+                pstmt.setString(5, address);
+                pstmt.setString(6, phone);
+                pstmt.setString(7, email);
+                pstmt.setString(8, education);
+                pstmt.setString(9, designation);
+                pstmt.setString(10, aadhar);
+                pstmt.setString(11, empId);
+                
+                // Execute the query
+                pstmt.executeUpdate();
+                
+                // Close the PreparedStatement and Connection
+                pstmt.close();
+                conn.close();
+                
                 JOptionPane.showMessageDialog(null, "Details added successfully");
                 setVisible(false);
                 new Home();
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
+            } catch (AssertionError | IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
             }
         } else {
             setVisible(false);

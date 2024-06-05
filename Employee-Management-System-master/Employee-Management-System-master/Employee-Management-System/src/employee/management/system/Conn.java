@@ -44,4 +44,17 @@ public class Conn {
             return false;
         }
     }
+    
+    public PreparedStatement prepareStatement(String query) throws SQLException {
+        return c.prepareStatement(query);
+    }
+
+    public void close() {
+        try {
+            if (s != null) s.close();
+            if (c != null) c.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
